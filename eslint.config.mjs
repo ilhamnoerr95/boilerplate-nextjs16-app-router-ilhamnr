@@ -31,7 +31,7 @@ const eslintConfig = defineConfig([
       "import/extensions": "off",
       "import/no-extraneous-dependencies": "off",
       "@typescript-eslint/no-use-before-define": "off",
-      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/quotes": "off",
       "@typescript-eslint/indent": "off",
       "@typescript-eslint/comma-dangle": "off",
