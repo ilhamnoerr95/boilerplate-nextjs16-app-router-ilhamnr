@@ -8,11 +8,6 @@ export default function UserClient({ email }: { email: string }) {
    * key harus sama dengan yg ada di server
    * untuk manggil cache yg sudah difetch dari server
    */
-  // const { data, isLoading } = useQuery({
-  //   queryKey: ["user", email],
-  //   queryFn: getUserByEmail,
-  // });
-
   const { data, isLoading } = useHookQuery<{ success: boolean; data: User }>({
     queryKey: ["/api/user", { email }],
     auth: false,

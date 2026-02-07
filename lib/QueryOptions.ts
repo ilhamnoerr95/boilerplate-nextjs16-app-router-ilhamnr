@@ -61,7 +61,7 @@ export const configQueryOptions = <TData = unknown>(options: TOptionsParams<TDat
        * @isicontext pageParam (infinite query), meta, queryKey, signal, client
        */
 
-      return Fetcher<TData>({ ...context, queryKey, auth });
+      return Fetcher<TData>({ ...context, auth });
     },
     staleTime: 1000 * 60 * 60, // 1 jam
     retry: false,
