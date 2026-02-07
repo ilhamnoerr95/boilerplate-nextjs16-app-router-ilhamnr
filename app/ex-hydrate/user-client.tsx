@@ -1,16 +1,21 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getUserByEmail } from "@/lib/getUserByEmail";
+import { User } from "@/lib/getUserByEmail";
+import { useHookQuery } from "@/hook/useQuery";
 
 export default function UserClient({ email }: { email: string }) {
   /**
    * key harus sama dengan yg ada di server
    * untuk manggil cache yg sudah difetch dari server
    */
-  const { data, isLoading } = useQuery({
-    queryKey: ["user", email],
-    queryFn: getUserByEmail,
+  // const { data, isLoading } = useQuery({
+  //   queryKey: ["user", email],
+  //   queryFn: getUserByEmail,
+  // });
+
+  const { data, isLoading } = useHookQuery<{ success: boolean; data: User }>({
+    queryKey: ["/api/user", { email }],
+    auth: false,
   });
 
   if (isLoading) {
@@ -24,8 +29,8 @@ export default function UserClient({ email }: { email: string }) {
   return (
     <div>
       <h2>User Profile</h2>
-      <p>Nama: {data.name}</p>
-      <p>Email: {data.email}</p>
+      <p>Nama: {data?.data.name}</p>
+      <p>Email: {data?.data.email}</p>
     </div>
   );
 }

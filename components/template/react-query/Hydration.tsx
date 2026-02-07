@@ -1,29 +1,19 @@
-import { HydrationBoundary, QueryClient, QueryFunction, dehydrate } from "@tanstack/react-query";
+import { HydrationBoundary, QueryClient, queryOptions, dehydrate } from "@tanstack/react-query";
 
-export type PrefetchQueries<T = unknown> = {
-  queryKey: any[];
-  queryFn: QueryFunction<T>;
-};
+export type PrefetchQueries<TData = unknown> = ReturnType<typeof queryOptions<TData>>;
 
-export type HydrationProps = {
-  queries: PrefetchQueries[];
+export type HydrationProps<TData> = {
+  queries: PrefetchQueries<TData>[];
   children: React.ReactNode;
 };
 
-const HydrationProvider = async (props: HydrationProps) => {
+const HydrationProvider = async <TData,>(props: HydrationProps<TData>) => {
   const { queries, children } = props;
 
   const queryClient = new QueryClient();
 
   // Prefetch di SERVER
-  await Promise.all(
-    queries.map((q) =>
-      queryClient.prefetchQuery({
-        queryKey: q.queryKey,
-        queryFn: q.queryFn,
-      })
-    )
-  );
+  await Promise.all(queries.map((q) => queryClient.prefetchQuery(q)));
 
   const dehydratedState = dehydrate(queryClient);
 

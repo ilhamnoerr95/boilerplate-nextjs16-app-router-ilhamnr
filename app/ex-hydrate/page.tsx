@@ -2,16 +2,26 @@ import { getUserByEmail, User } from "@/lib/getUserByEmail";
 
 import UserClient from "./user-client";
 import HydrationProvider, { PrefetchQueries } from "@/components/template/react-query/Hydration";
+import { configQueryOptions } from "@/lib/QueryOptions";
 export default async function Home() {
   const email = "ilham@gmail.com";
+  const email2 = "budi@gmail.com";
 
   /**
    * ex: penggunaan hydration untuk prefetch data di server
    */
   const queries: PrefetchQueries<User | null>[] = [
     {
-      queryKey: ["user", email],
-      queryFn: getUserByEmail,
+      ...configQueryOptions<User | null>({
+        queryKey: ["/api/user", { email }],
+        auth: false,
+      }),
+    },
+    {
+      ...configQueryOptions<User | null>({
+        queryKey: ["/api/user", { email: email2 }],
+        auth: false,
+      }),
     },
   ];
   return (
