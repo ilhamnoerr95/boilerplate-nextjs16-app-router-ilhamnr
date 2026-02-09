@@ -1,3 +1,4 @@
+import { HttpMethod } from "@/types/Fetcher.type";
 import { QueryKey } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 /**
@@ -6,9 +7,9 @@ import Cookies from "js-cookie";
  * queryKey[1] for query params
  */
 
-type TFetcherParams<TData = unknown> = {
-  method?: "GET" | "POST" | "PUT" | "DELETE";
-  body?: TData;
+type TFetcherParams<TData = unknown, TBody = unknown> = {
+  method?: HttpMethod;
+  body?: TBody;
   queryKey: QueryKey;
   headers?: HeadersInit;
   url?: string | undefined | null;
@@ -18,9 +19,11 @@ type TFetcherParams<TData = unknown> = {
 
 /**
  * Custom fetcher function to make HTTP requests.
- * @returns
+ * @returns TData is responseData type
  */
-export const Fetcher = async <TData>(params: TFetcherParams<TData>) => {
+export const Fetcher = async <TData = unknown, TBody = unknown>(
+  params: TFetcherParams<TData, TBody>
+): Promise<TData> => {
   try {
     const {
       method = "GET",

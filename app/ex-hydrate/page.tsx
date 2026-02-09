@@ -19,7 +19,7 @@ export default async function Home() {
     },
     {
       ...configQueryOptions<User | null>({
-        queryKey: ["/api/user", { email: email2 }],
+        queryKey: ["/api/tester/test", { email: email2 }],
         auth: false,
       }),
     },
@@ -29,7 +29,7 @@ export default async function Home() {
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
         {/* apabila mau coba untuk tidak menggunakan ssr, hilangkan hydrationprovider-nya */}
         <HydrationProvider queries={queries}>
-          <UserClient email={email} />
+          <UserClient email={email} email2={email2} />
         </HydrationProvider>
       </main>
     </div>

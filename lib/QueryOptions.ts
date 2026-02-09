@@ -9,6 +9,7 @@ import { Fetcher } from "./Fetcher";
 export type TOptionsParams<TData = unknown> = {
   queryKey: QueryKey;
   auth?: boolean;
+  server?: boolean;
   //   not allowed override queryKey and queryFn
   config?: Omit<UseQueryOptions<TData, Error, TData, QueryKey>, "queryKey" | "queryFn">;
 };
@@ -23,6 +24,7 @@ export const configQueryOptions = <TData = unknown>(options: TOptionsParams<TDat
     queryKey,
     //! default auth in fetcher is true
     auth,
+    server = false,
     /**
      * config:  
     gcTime,
@@ -61,7 +63,7 @@ export const configQueryOptions = <TData = unknown>(options: TOptionsParams<TDat
        * @isicontext pageParam (infinite query), meta, queryKey, signal, client
        */
 
-      return Fetcher<TData>({ ...context, auth });
+      return Fetcher<TData>({ ...context, auth, serverAction: server });
     },
     staleTime: 1000 * 60 * 60, // 1 jam
     retry: false,
