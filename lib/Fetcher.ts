@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
  * Fetcher module to handle HTTP requests.
  * queryKey[0] for path
  * queryKey[1] for query params
+ * quueryKey[2] for dynamic link real be
  */
 
 type TFetcherParams<TData = unknown, TBody = unknown> = {
@@ -31,6 +32,7 @@ export const Fetcher = async <TData = unknown, TBody = unknown>(
       queryKey,
       headers = {
         "Content-Type": "application/json",
+        test: "yea",
       },
       url,
       auth = true,
@@ -38,7 +40,7 @@ export const Fetcher = async <TData = unknown, TBody = unknown>(
     } = params;
 
     const token = Cookies.get("token"); // cookies name
-
+    const link = queryKey[2];
     const query = new URLSearchParams(queryKey?.[1] as string);
     const path = url || `${queryKey[0]}?${query.toString()}`;
     const serverActPath = serverAction
@@ -53,6 +55,7 @@ export const Fetcher = async <TData = unknown, TBody = unknown>(
       ...(body && { body: JSON.stringify(body) }),
       headers: {
         ...headers,
+        link: link as string,
         ...(auth && { Authorization: token }),
       },
     };

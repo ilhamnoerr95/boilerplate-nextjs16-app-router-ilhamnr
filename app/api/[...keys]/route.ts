@@ -2,18 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { HEADERS } from "@/utils/header";
 import { cookies } from "next/headers";
 
+const BE_URL: any = {
+  v1: process.env.NEXT_PUBLIC_API_LINK_BE,
+  mocking: "www.tester.com",
+};
+
 export async function GET(req: NextRequest, { params }: { params: Promise<{ keys?: string[] }> }) {
   try {
     const cookie = await cookies();
     const token = cookie.get("token")?.value;
     const auth = req.headers.get("auth");
+    const link = req.headers.get("link") as string;
 
     const { keys } = (await params) ?? [];
     const pathParams = "/" + keys?.join("/");
     const query = req.nextUrl.searchParams.toString();
     const pathWQuery = query ? `${pathParams}?${query}` : pathParams;
 
-    const url = `${process.env.NEXT_PUBLIC_API_LINK_BE}${pathWQuery}`;
+    const url = `${BE_URL?.[link]}${pathWQuery}`;
+
     const options = {
       method: "GET",
       headers: {

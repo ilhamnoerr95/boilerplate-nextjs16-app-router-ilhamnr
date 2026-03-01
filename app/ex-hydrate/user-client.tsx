@@ -15,7 +15,7 @@ export default function UserClient({ email, email2 }: { email: string; email2: s
   });
 
   const { data: testData } = useHookQuery<{ success: boolean; data: User }>({
-    queryKey: ["/api/tester/test", { email: email2 }],
+    queryKey: ["/api/tester/test", { email: email2 }, "v1"],
     auth: false,
   });
 

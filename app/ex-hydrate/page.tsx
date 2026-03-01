@@ -19,7 +19,7 @@ export default async function Home() {
     },
     {
       ...configQueryOptions<User | null>({
-        queryKey: ["/api/tester/test", { email: email2 }],
+        queryKey: ["/api/tester/test", { email: email2 }, "v1"],
         auth: false,
       }),
     },
