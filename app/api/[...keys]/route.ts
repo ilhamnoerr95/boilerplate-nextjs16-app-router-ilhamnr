@@ -56,13 +56,15 @@ export async function DELETE(
     const cookie = await cookies();
     const token = cookie.get("token")?.value;
     const auth = req.headers.get("auth");
+    const link = req.headers.get("link") as string;
 
     const { keys } = (await params) ?? [];
     const pathParams = "/" + keys?.join("/");
     const query = req.nextUrl.searchParams.toString();
     const pathWQuery = query ? `${pathParams}?${query}` : pathParams;
 
-    const url = `${process.env.NEXT_PUBLIC_API_LINK_BE}${pathWQuery}`;
+    const url = `${BE_URL?.[link]}${pathWQuery}`;
+
     const options = {
       method: "DELETE",
       headers: {
@@ -97,13 +99,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ key
     const cookie = await cookies();
     const token = cookie.get("token")?.value;
     const auth = req.headers.get("auth");
+    const link = req.headers.get("link") as string;
 
     const { keys } = (await params) ?? [];
     const pathParams = "/" + keys?.join("/");
     const query = req.nextUrl.searchParams.toString();
     const pathWQuery = query ? `${pathParams}?${query}` : pathParams;
 
-    const url = `${process.env.NEXT_PUBLIC_API_LINK_BE}${pathWQuery}`;
+    const url = `${BE_URL?.[link]}${pathWQuery}`;
+
     const options = {
       method: "POST",
       headers: {
@@ -144,13 +148,15 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ keys
     const cookie = await cookies();
     const token = cookie.get("token")?.value;
     const auth = req.headers.get("auth");
+    const link = req.headers.get("link") as string;
 
     const { keys } = (await params) ?? [];
     const pathParams = "/" + keys?.join("/");
     const query = req.nextUrl.searchParams.toString();
     const pathWQuery = query ? `${pathParams}?${query}` : pathParams;
 
-    const url = `${process.env.NEXT_PUBLIC_API_LINK_BE}${pathWQuery}`;
+    const url = `${BE_URL?.[link]}${pathWQuery}`;
+
     const options = {
       method: "PUT",
       headers: {
