@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 const BE_URL: any = {
   v1: process.env.NEXT_PUBLIC_API_LINK_BE,
   mocking: "www.tester.com",
+  // default: process.env.NEXT_PUBLIC_ORIGIN,
 };
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ keys?: string[] }> }) {
@@ -18,7 +19,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ keys
     const pathParams = "/" + keys?.join("/");
     const query = req.nextUrl.searchParams.toString();
     const pathWQuery = query ? `${pathParams}?${query}` : pathParams;
-
+    if (!link) {
+      return NextResponse.json({
+        message: "Handled locally",
+        path: pathParams,
+      });
+    }
     const url = `${BE_URL?.[link]}${pathWQuery}`;
 
     const options = {
@@ -63,8 +69,15 @@ export async function DELETE(
     const query = req.nextUrl.searchParams.toString();
     const pathWQuery = query ? `${pathParams}?${query}` : pathParams;
 
-    const url = `${BE_URL?.[link]}${pathWQuery}`;
+    // default local handler
+    if (!link) {
+      return NextResponse.json({
+        message: "Handled locally",
+        path: pathParams,
+      });
+    }
 
+    const url = `${BE_URL?.[link]}${pathWQuery}`;
     const options = {
       method: "DELETE",
       headers: {
@@ -103,8 +116,18 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ key
 
     const { keys } = (await params) ?? [];
     const pathParams = "/" + keys?.join("/");
+
     const query = req.nextUrl.searchParams.toString();
     const pathWQuery = query ? `${pathParams}?${query}` : pathParams;
+
+    // default local handler
+    if (!link) {
+      return NextResponse.json({
+        message: "Handled locally",
+        path: pathParams,
+        body,
+      });
+    }
 
     const url = `${BE_URL?.[link]}${pathWQuery}`;
 
@@ -121,6 +144,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ key
     const apiRes = await fetch(url, options);
 
     const result = await apiRes.json();
+    console.log(url, result, "data", data);
 
     if (!apiRes.ok) {
       console.log("not oke?", result?.error?.data);
@@ -155,6 +179,14 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ keys
     const query = req.nextUrl.searchParams.toString();
     const pathWQuery = query ? `${pathParams}?${query}` : pathParams;
 
+    // default local handler
+    if (!link) {
+      return NextResponse.json({
+        message: "Handled locally",
+        path: pathParams,
+        body,
+      });
+    }
     const url = `${BE_URL?.[link]}${pathWQuery}`;
 
     const options = {
