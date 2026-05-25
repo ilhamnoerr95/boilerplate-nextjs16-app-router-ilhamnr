@@ -1,0 +1,39 @@
+@use "variables" as *;
+
+// ─────────────────────────────────────────────
+// SCSS FUNCTIONS
+// ─────────────────────────────────────────────
+
+// === SPACING ===
+// Menghasilkan nilai spacing berdasarkan multiplier.
+// Usage: padding: spacing(4) → 1rem
+@function spacing($multiplier) {
+  @return $spacing-unit * $multiplier;
+}
+
+// === REM CONVERTER ===
+// Konversi px ke rem (base 16px).
+// Usage: font-size: rem(14) → 0.875rem
+@function rem($px) {
+  @return calc($px / 16) * 1rem;
+}
+
+// === Z-INDEX GETTER ===
+// Ambil z-index dari variabel dengan nama yang readable.
+// Usage: z-index: z("modal")
+$z-map: (
+  "base":     $z-base,
+  "above":    $z-above,
+  "dropdown": $z-dropdown,
+  "overlay":  $z-overlay,
+  "modal":    $z-modal,
+  "toast":    $z-toast,
+);
+
+@function z($layer) {
+  $value: map-get($z-map, $layer);
+  @if $value == null {
+    @error "Layer z-index `#{$layer}` tidak ditemukan.";
+  }
+  @return $value;
+}

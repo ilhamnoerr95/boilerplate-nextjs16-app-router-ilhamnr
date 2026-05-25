@@ -1,72 +1,68 @@
-### Next.js 16 Boilerplate (App Router)
+# Next.js 16 Boilerplate — App Router
 
 A scalable Next.js 16 boilerplate built with best practices for modern React development.
-This project includes atomic design architecture, data fetching abstraction, global state management, and testing setup to accelerate development.
+Includes atomic design architecture, data fetching abstraction, global state management, styling system, and testing setup.
 
-# ✨ Features
+---
 
-⚡ Next.js 16 App Router
+## ✨ Features
 
+### ⚡ Next.js 16 App Router
 - Built using Next.js App Router
 - Optimized for SSR, CSR, and hydration
 - Clean folder structure for scalability
 
+---
+
 ### 🧩 Atomic Design Component Structure
 
-Components are structured using Atomic Design Pattern:
+Components are structured using the Atomic Design Pattern:
 
-```code
+```
 components/
- ├── atom
- ├── molecules
- ├── organizations
- └── template
+ ├── atom/           # Smallest reusable units (Button, Input, Badge)
+ ├── molecules/      # Combinations of atoms
+ ├── organizations/  # Complex UI sections
+ ├── template/       # Page layout templates
+ └── example/        # Example components (cn, SCSS demo)
 ```
 
-This structure improves reusability, maintainability, and scalability.
+---
 
 ### 🌐 Data Fetching with React Query
 
-Data fetching is powered by React Query, with custom hooks abstraction.
+Data fetching is powered by React Query with custom hooks abstraction.
 
 Features:
-
-- Custom useQuery hook
-- Custom useMutation hook
+- Custom `useQuery` hook
+- Custom `useMutation` hook
 - Built-in SSR hydration support
 - Centralized fetcher
 
-Example usage:
-
 ```typescript
-// use hook query
+// useQuery hook
 const { data, isLoading } = useHookQuery<{ success: boolean; data: User }>({
   queryKey: ["/api/user", { email }],
   auth: false,
 });
 
-// usehook mutation
+// useMutation hook
 const testMutate = useMutation({
   ...useHooksMutation({ mutationKey: ["/api/login", "", ""], method: "POST" }),
 });
 ```
 
-#
+---
 
-###
+### 🔄 Dynamic Fetcher
 
-🔄 Dynamic Fetcher
-
-A reusable fetcher utility is provided.
+A reusable fetcher utility compatible with React Query and SSR.
 
 Features:
-
 - Dynamic endpoint
 - Query params support
 - Error handling
-- Compatible with React Query
-
-Example:
+- ISR compatible
 
 ```typescript
 const data: PokemonListItem = await Fetcher({
@@ -76,13 +72,11 @@ const data: PokemonListItem = await Fetcher({
 });
 ```
 
-#
+---
 
 ### 🧠 Global State with Zustand
 
 Simple and scalable global state management using Zustand.
-
-Example store:
 
 ```typescript
 const useStore = create((set) => ({
@@ -91,221 +85,257 @@ const useStore = create((set) => ({
 }));
 ```
 
-#
-
-### 🧪 Testing Setup
-
-Testing environment already configured using:
-
-- Jest
-- React Testing Library
-
-Two types of testing included:
-
-```code
-tests/
- ├── unit
- └── integration
-```
-
-#
-
-### 🔁 SSR Hydration Support
-
-Server-side fetching can be hydrated into the client using React Query Hydration. see in **ex-hydrate** pages
-
-#
-
-### 🧩 Additional Hooks
-
-useDebounce Useful for search input or API throttling
-
-Example
-
-```typescript
-const debounceValue = useDebounce(value, 500);
-```
-
-#
-
-### 🌐 Dynamic Local API Proxy
-
-Local API proxy is available to simulate backend endpoints.
-
-```code
-app/api/[...keys]
-```
-
-This allows dynamic routing like:
-
-```code
-/api/users
-/api/products
-```
-
-#
+---
 
 ### 🎨 Styling
 
-Default styling includes:
+This boilerplate uses a **layered styling system**:
 
-- Tailwind CSS
+#### Tailwind CSS v4 (utility-first)
 
-Utility-first styling for fast UI development.
+Configuration is done directly in `app/globals.css` via `@theme` — no `tailwind.config.js` needed in v4.
 
-#
+```css
+/* app/globals.css */
+@import "tailwindcss";
 
-### 📦 Additional Libraries
-
-This boilerplate includes several useful third-party libraries:
-
-| Library               | Purpose                      |
-| --------------------- | ---------------------------- |
-| React Query           | Server state management      |
-| Zustand               | Global state                 |
-| Jest                  | Unit testing                 |
-| React Testing Library | Component testing            |
-| Tailwind CSS          | Styling                      |
-| clsx                  | Conditional className helper |
-
-Example:
-
-```typescript
-clsx("text-sm", isActive && "text-blue-500");
+@theme {
+  --color-brand-500: #3b82f6;   /* → bg-brand-500, text-brand-500 */
+  --color-danger:    #ef4444;   /* → bg-danger, text-danger        */
+  --radius-lg:       0.5rem;    /* → rounded-lg                    */
+  --breakpoint-xs:   480px;     /* → xs:...                        */
+}
 ```
 
-#
+#### SCSS Modules (component-scoped)
+
+SCSS is available for complex styling logic: mixins, functions, BEM, responsive helpers.
+
+```
+styles/
+ ├── abstracts/
+ │   ├── _variables.scss   # SCSS vars (breakpoints, spacing, z-index)
+ │   ├── _mixins.scss      # respond-to, flex, truncate, focus-ring, sr-only
+ │   ├── _functions.scss   # spacing(), rem(), z()
+ │   └── _index.scss       # @forward entry point
+ └── base/
+     └── _reset.scss       # Supplemental resets
+```
+
+Usage in a component:
+
+```scss
+// components/MyComponent.module.scss
+@use "@/styles/abstracts" as *;
+
+.card {
+  padding: spacing(4);        // → 1rem
+  border-radius: $radius-lg;
+  transition: box-shadow $transition-normal;
+
+  @include respond-to("md") { // → @media (min-width: 768px)
+    display: flex;
+  }
+}
+```
+
+#### `cn` — Utility for merging classes
+
+`utils/cn.ts` combines `clsx` (conditionals) and `tailwind-merge` (conflict resolution). Use it to safely merge Tailwind utilities, SCSS module classes, and dynamic conditions.
+
+```typescript
+import { cn } from "@/utils/cn";
+import styles from "./MyComponent.module.scss";
+
+// Gabungkan SCSS module class + Tailwind + kondisi
+<div className={cn(styles.card, "mt-4", isActive && "ring-2 ring-brand-500")} />
+
+// twMerge resolve konflik — hanya p-2 yang menang
+<div className={cn("p-6", override && "p-2")} />
+```
+
+> **Panduan:** Gunakan Tailwind untuk layout & spacing umum, SCSS Module untuk komponen dengan logika styling kompleks (animasi, BEM, nesting dalam), dan `cn` untuk menggabungkan keduanya.
+
+---
+
+### 🧪 Testing
+
+Testing environment configured using Jest + React Testing Library.
+
+```
+tests/
+ ├── unit/         # Unit tests
+ └── integration/  # Integration tests
+```
+
+---
+
+### 🔁 SSR Hydration Support
+
+Server-side fetching hydrated into the client using React Query. See `app/ex-hydrate/`.
+
+---
+
+### 🧩 Additional Hooks
+
+```typescript
+// useDebounce — untuk search input / API throttling
+const debounceValue = useDebounce(value, 500);
+```
+
+---
+
+### 🌐 Dynamic Local API Proxy
+
+```
+app/api/[...keys]/route.ts
+```
+
+Routes dynamically like `/api/users`, `/api/products`.
+
+---
+
+### 📦 Tech Stack
+
+| Library               | Purpose                                        |
+| --------------------- | ---------------------------------------------- |
+| Next.js 16            | Framework (App Router, SSR, ISR)               |
+| React 19              | UI library                                     |
+| TypeScript            | Static typing                                  |
+| Tailwind CSS v4       | Utility-first styling                          |
+| Sass (SCSS)           | Component-scoped styles, mixins, BEM           |
+| clsx + tailwind-merge | `cn` utility — conditional & conflict-free CSS |
+| React Query v5        | Server state management                        |
+| Zustand               | Global client state                            |
+| Jest                  | Unit & integration testing                     |
+| React Testing Library | Component testing                              |
+| js-cookie             | Cookie management                              |
+
+---
 
 ### 📂 Project Structure
 
-```code
+```
 .
-├── app
-│   ├── api
-│   │   └── [...keys]
-│   │       └── route.ts        # Dynamic local API proxy handler
-│   │
-│   ├── user                    # Example user module
-│   │
-│   ├── ex-hydrate              # Example SSR hydration with React Query
+├── app/
+│   ├── api/
+│   │   └── [...keys]/
+│   │       └── route.ts          # Dynamic local API proxy
+│   ├── ex-hydrate/               # SSR hydration with React Query
 │   │   ├── page.tsx
 │   │   └── user-client.tsx
-│   │
-│   ├── ex-login                # Example login page
-│   │   └── page.tsx
-│   │
-│   ├── favicon.ico
-│   ├── globals.css             # Global styles
-│   ├── layout.tsx              # Root layout (App Router)
-│   └── page.tsx                # Root page
+│   ├── ex-interceptor/           # Route interceptor example
+│   ├── ex-modal/                 # Modal example
+│   ├── ex-slot/                  # Parallel slot example
+│   ├── globals.css               # Tailwind v4 @theme config + base styles
+│   ├── layout.tsx                # Root layout
+│   └── page.tsx                  # Root page
 │
-├── components                  # UI components using Atomic Design
-│   ├── atom                    # Smallest reusable components (Button, Input)
-│   ├── molecules               # Combination of atoms
-│   ├── organizations           # Complex UI sections
-│   └── template                # Page layout templates
+├── components/
+│   ├── atom/                     # Smallest reusable units
+│   ├── molecules/                # Combinations of atoms
+│   ├── organizations/            # Complex UI sections
+│   ├── template/                 # Page layout templates
+│   └── example/
+│       ├── CnExample.tsx         # Demo: cn utility (conditional, merge)
+│       ├── ScssExample.tsx       # Demo: SCSS Module + cn
+│       └── ScssExample.module.scss
 │
-├── hook                        # Custom reusable hooks
-│   └── useDebounce.ts          # Debounce hook
+├── styles/                       # Shared SCSS abstracts
+│   ├── abstracts/
+│   │   ├── _variables.scss       # Breakpoints, spacing, z-index, radius
+│   │   ├── _mixins.scss          # respond-to, flex, truncate, focus-ring
+│   │   ├── _functions.scss       # spacing(), rem(), z()
+│   │   └── _index.scss           # @forward entry point
+│   └── base/
+│       └── _reset.scss           # Supplemental resets
 │
-├── lib                         # Core libraries / utilities
-│   └── fetcher.ts              # Dynamic fetcher used by React Query
+├── hook/
+│   └── useDebounce.ts
 │
-├── store                       # Global state management using Zustand
+├── lib/
+│   └── fetcher.ts                # Dynamic fetcher (React Query compatible)
+│
+├── store/
 │   ├── index.ts
 │   └── useExample.ts
 │
-├── tests                       # Testing setup
-│   ├── integration             # Integration tests
-│   └── unit
-│       └── components          # Unit tests for components
+├── tests/
+│   ├── integration/
+│   └── unit/
+│       └── components/
 │           ├── Button.test.tsx
 │           └── Input.test.tsx
 │
-├── types                       # Global TypeScript types
+├── types/
 │   ├── Fetcher.type.d.ts
 │   └── QueryParam.d.ts
 │
-├── utils                       # Helper utilities
+├── utils/
+│   ├── cn.ts                     # clsx + tailwind-merge utility
 │   └── header.ts
 │
-├── public                      # Static assets
-│
-├── .env                        # Environment variables
-├── .gitignore
-├── .prettierrc
-├── eslint.config.mjs           # ESLint configuration
-│
-├── jest.config.ts              # Base Jest config
-├── jest.integration.config.ts  # Integration test config
-├── jest.unit.config.ts         # Unit test config
-├── jest.setup.ts               # Jest setup
-│
-├── next.config.ts              # Next.js configuration
-├── next-env.d.ts
-│
+├── public/
+├── .env
+├── eslint.config.mjs
+├── jest.config.ts
+├── jest.unit.config.ts
+├── jest.integration.config.ts
+├── jest.setup.ts
+├── next.config.ts
+├── postcss.config.mjs
+├── tsconfig.json
 ├── package.json
 └── package-lock.json
-
 ```
+
+---
 
 ## 🚀 Getting Started
 
 ### Install dependencies
 
 ```shell
-npm run install
+npm install
 ```
 
-### Run Development server
+### Run development server
 
 ```shell
 npm run server:dev
 ```
 
+---
+
 ## 🧪 Testing
 
-Run unit and integration tests with:
-
 ```shell
+# Run all tests
 npm run test:all
-```
 
-or
-
-Run unit tests with:
-
-```shell
+# Unit tests only
 npm run test:unit
-```
 
-or
-
-Run unit integration with:
-
-```shell
+# Integration tests only
 npm run test:integration
 ```
 
-## 🎯 Goals of this Boilerplate
+---
+
+## 🎯 Goals
 
 This boilerplate aims to provide:
 
-- scalable architecture
-- standardized data fetching
-- reusable components
-- built-in testing setup
-- maintainable project structure
+- Scalable architecture (Atomic Design)
+- Standardized data fetching (React Query + custom hooks)
+- Layered styling system (Tailwind v4 + SCSS + `cn`)
+- Reusable components
+- Built-in testing setup
 
-Suitable for:
+Suitable for production-ready projects and frontend architecture references.
 
-- production-ready projects
-- frontend architecture references
-
-#
+---
 
 ### 📄 License
 
 MIT License
-
-#

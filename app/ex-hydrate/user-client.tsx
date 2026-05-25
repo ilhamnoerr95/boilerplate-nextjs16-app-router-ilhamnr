@@ -2,6 +2,8 @@
 
 import { User } from "@/lib/getUserByEmail";
 import { useHookQuery } from "@/hook/useHookQuery";
+import { useMutation } from "@tanstack/react-query";
+import { useHooksMutation } from "@/hook/useHookMutation";
 
 export default function UserClient({ email, email2 }: { email: string; email2: string }) {
   /**
@@ -17,6 +19,10 @@ export default function UserClient({ email, email2 }: { email: string; email2: s
   const { data: testData } = useHookQuery<{ success: boolean; data: User }>({
     queryKey: ["/api/tester/test", { email: email2 }, "v1"],
     auth: false,
+  });
+
+  const testMutate = useMutation({
+    ...useHooksMutation({ mutationKey: ["/api/login", "", ""], method: "POST" }),
   });
 
   if (isLoading) {

@@ -1,0 +1,74 @@
+@use "variables" as *;
+
+// ─────────────────────────────────────────────
+// MIXINS
+// ─────────────────────────────────────────────
+
+// === RESPONSIVE BREAKPOINT ===
+// Usage: @include respond-to("md") { ... }
+@mixin respond-to($bp) {
+  $value: map-get($breakpoints, $bp);
+  @if $value == null {
+    @error "Breakpoint `#{$bp}` tidak ditemukan. Tersedia: #{map-keys($breakpoints)}";
+  }
+  @media (min-width: $value) {
+    @content;
+  }
+}
+
+// === FLEXBOX SHORTHAND ===
+// Usage: @include flex(center, space-between)
+@mixin flex($align: stretch, $justify: flex-start, $direction: row) {
+  display: flex;
+  align-items: $align;
+  justify-content: $justify;
+  flex-direction: $direction;
+}
+
+// === ABSOLUTE CENTER ===
+// Menempatkan elemen ke tengah parent (relative)
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// === TRUNCATE TEXT ===
+// Usage: @include truncate(200px)
+@mixin truncate($max-width: 100%) {
+  max-width: $max-width;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// === VISUALLY HIDDEN (accessible) ===
+// Sembunyikan secara visual tapi tetap terbaca screen reader
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// === FOCUS RING ===
+// Konsisten dengan Tailwind focus-visible
+@mixin focus-ring($color: var(--color-brand-500)) {
+  &:focus-visible {
+    outline: 2px solid $color;
+    outline-offset: 2px;
+  }
+}
+
+// === SIZE SHORTHAND ===
+// Usage: @include size(48px) atau @include size(48px, 24px)
+@mixin size($width, $height: $width) {
+  width: $width;
+  height: $height;
+}

@@ -1,0 +1,5 @@
+// Entry point abstracts — forward semua ke satu titik.
+// Setiap file SCSS cukup: @use "@/styles/abstracts" as *;
+@forward "variables";
+@forward "mixins";
+@forward "functions";

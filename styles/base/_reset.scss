@@ -1,0 +1,38 @@
+// Tambahan reset di luar yang sudah disediakan Tailwind Preflight.
+// Hanya tambahkan apa yang benar-benar dibutuhkan proyek.
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+// Smooth scroll default
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Hilangkan margin default list jika tidak pakai role list
+ul[role="list"],
+ol[role="list"] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+// Gambar responsif secara default
+img,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+// Inherit font untuk form element (browser default berbeda-beda)
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}

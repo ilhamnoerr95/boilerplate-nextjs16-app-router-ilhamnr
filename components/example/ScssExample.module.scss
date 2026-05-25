@@ -1,0 +1,95 @@
+// Cara import abstracts: gunakan path alias @/styles/abstracts
+// karena Next.js sudah handle tsconfig paths.
+@use "@/styles/abstracts" as *;
+
+// ─────────────────────────────────────────────
+// CONTOH 1 — Mixin respond-to (responsive)
+// ─────────────────────────────────────────────
+.card {
+  padding: spacing(4);       // function: 4 * 0.25rem = 1rem
+  border-radius: $radius-lg;
+  background: var(--color-background);
+  box-shadow: var(--shadow-card);
+  transition: box-shadow $transition-normal;
+
+  &:hover {
+    box-shadow: var(--shadow-popup);
+  }
+
+  // Responsif via mixin — setara Tailwind md:flex-row
+  @include respond-to("md") {
+    display: flex;
+    gap: spacing(6);
+  }
+}
+
+// ─────────────────────────────────────────────
+// CONTOH 2 — Nesting + BEM-style
+// ─────────────────────────────────────────────
+.badge {
+  @include flex(center, center);
+  gap: spacing(1.5);
+  border-radius: $radius-full;
+  padding: spacing(0.5) spacing(2.5);
+  font-size: rem(12);
+  font-weight: 500;
+
+  // Modifier via &-- (BEM)
+  &--success { background: var(--color-success-light); color: var(--color-success-dark); }
+  &--warning { background: var(--color-warning-light); color: var(--color-warning-dark); }
+  &--danger  { background: var(--color-danger-light);  color: var(--color-danger-dark);  }
+  &--info    { background: var(--color-info-light);    color: var(--color-info-dark);    }
+
+  // Element via &__
+  &__dot {
+    @include size(6px);
+    border-radius: $radius-full;
+    background: currentColor;
+  }
+}
+
+// ─────────────────────────────────────────────
+// CONTOH 3 — Focus ring + sr-only
+// ─────────────────────────────────────────────
+.iconButton {
+  @include size(36px);
+  @include flex(center, center);
+  @include focus-ring(var(--color-brand-500));
+  border: none;
+  border-radius: $radius-md;
+  background: transparent;
+  cursor: pointer;
+  transition: background $transition-fast;
+
+  &:hover { background: var(--color-neutral-100); }
+
+  // Label untuk screen reader
+  .srLabel { @include sr-only; }
+}
+
+// ─────────────────────────────────────────────
+// CONTOH 4 — Z-index dari function z()
+// ─────────────────────────────────────────────
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: z("overlay");  // → 200
+  background: rgb(0 0 0 / 0.5);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: z("modal");    // → 300
+  @include absolute-center;
+  width: 100%;
+  max-width: 32rem;
+}
+
+// ─────────────────────────────────────────────
+// CONTOH 5 — Truncate
+// ─────────────────────────────────────────────
+.title {
+  @include truncate(280px);
+  font-weight: 600;
+}
